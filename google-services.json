@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "547252646413",
+    "firebase_url": "https://pathtofriend.firebaseio.com",
+    "project_id": "pathtofriend",
+    "storage_bucket": "pathtofriend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547252646413:android:9d8356930be0b5fc",
+        "android_client_info": {
+          "package_name": "com.test.kovilapauvaday.prototype_connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547252646413-f4csh139iunu4ii0fei1cb81jupuon2b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCr7QA1AroxOAhcwpkX_6-LI9B9FO1lvU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
