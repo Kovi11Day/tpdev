@@ -8,4 +8,15 @@
     tools:context="com.test.kovilapauvaday.prototype_connect.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
+    <TextView
+        android:id="@+id/textview_test_profilename"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="test profilename name"
+        app:layout_constraintLeft_toRightOf="@+id/imageview_contact_photo"
+        app:layout_constraintRight_toLeftOf="@+id/checkbox_contact"
+        app:layout_constraintBottom_toBottomOf="@+id/imageview_contact_photo"
+        app:layout_constraintTop_toTopOf="@+id/imageview_contact_photo"
+
+        />
 </android.support.constraint.ConstraintLayout>
