@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bleu_claire"
+    tools:context="com.test.kovilapauvaday.prototype_connect.ProfileActivity">
+
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:background="@color/bleu"
+        app:srcCompat="@drawable/image_contacte" />
+
+    <TextView
+        android:id="@+id/profile_pseudo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="Pseudo"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/profile_numero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_pseudo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:text="numero"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/profile_envoyer_demande"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/profile_annule_demande"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:text="DEMANDE d'AJOUT AU AMIES"
+        android:backgroundTint="@color/bleu_fonce"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/profile_annule_demande"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp"
+        android:text="ANNULER LE DEMANDE"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/bleu_fonce"/>
+
+</RelativeLayout>

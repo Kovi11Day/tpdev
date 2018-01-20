@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bleu_claire"
+    android:layout_marginBottom="1dp">
+
+    <ImageView
+        android:id="@+id/user_image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/image_contacte" />
+
+    <TextView
+        android:id="@+id/user_pseudo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/user_image"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@+id/user_image"
+        android:text="Pseudo"
+        android:textColor="@color/bleu_fonce"
+        android:textSize="18sp"
+        android:layout_toRightOf="@+id/user_image"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        android:id="@+id/user_numero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/user_pseudo"
+        android:layout_below="@+id/user_pseudo"
+        android:textColor="@color/bleu_fonce"
+        android:layout_marginTop="10dp"
+        android:text="Numero"
+        android:layout_alignLeft="@+id/user_pseudo" />
+
+    <!--
+    <ImageButton
+        android:id="@+id/button_ajout_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/user_numero"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/image_add" />
+
+    <ImageButton
+        android:id="@+id/button_location_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/button_ajout_user"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/image_localisation" />
+     -->
+
+</RelativeLayout>

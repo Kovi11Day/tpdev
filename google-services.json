@@ -1,27 +1,71 @@
 {
   "project_info": {
-    "project_number": "547252646413",
-    "firebase_url": "https://pathtofriend.firebaseio.com",
-    "project_id": "pathtofriend",
-    "storage_bucket": "pathtofriend.appspot.com"
+    "project_number": "675362182852",
+    "firebase_url": "https://projet-gps-tpdev.firebaseio.com",
+    "project_id": "projet-gps-tpdev",
+    "storage_bucket": "projet-gps-tpdev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:547252646413:android:9d8356930be0b5fc",
+        "mobilesdk_app_id": "1:675362182852:android:07d059c3187278b2",
+        "android_client_info": {
+          "package_name": "com.example.aram.projet_gps_tpdev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675362182852-p3grscg5f37pmrthnnh58tci1jqemoi0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aram.projet_gps_tpdev",
+            "certificate_hash": "7b8a3019eabaacee6b248627a142b25d862fc957"
+          }
+        },
+        {
+          "client_id": "675362182852-cl933fi3tbs65ojgdi89a74usv8vu4ro.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnwfAbWwKxhibmmULK_5c5rM1-7eqvD1U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675362182852-cl933fi3tbs65ojgdi89a74usv8vu4ro.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675362182852:android:9d8356930be0b5fc",
         "android_client_info": {
           "package_name": "com.test.kovilapauvaday.prototype_connect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "547252646413-f4csh139iunu4ii0fei1cb81jupuon2b.apps.googleusercontent.com",
+          "client_id": "675362182852-cl933fi3tbs65ojgdi89a74usv8vu4ro.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBCr7QA1AroxOAhcwpkX_6-LI9B9FO1lvU"
+          "current_key": "AIzaSyBnwfAbWwKxhibmmULK_5c5rM1-7eqvD1U"
         }
       ],
       "services": {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/contacts"
+            android:icon="@drawable/image_tout_utilisateurs"
+            android:title="Tous les utilisateus" />
+        <item
+            android:id="@+id/mes_amies"
+            android:icon="@android:drawable/stat_sys_phone_call"
+            android:title="Mes amies" />
+        <item
+            android:id="@+id/messages"
+            android:icon="@drawable/image_messages"
+            android:title="Messages" />
+
+        <item
+            android:id="@+id/nav_contacts"
+            android:icon="@android:drawable/ic_dialog_info"
+            android:title="Contacts" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/parameters"
+                android:icon="@drawable/image_parametres"
+                android:title="Parameters" />
+            <item
+                android:id="@+id/sortie"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Sortie" />
+        </menu>
+    </item>
+
+</menu>

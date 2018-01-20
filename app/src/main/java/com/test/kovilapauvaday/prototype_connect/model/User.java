@@ -5,12 +5,18 @@ package com.test.kovilapauvaday.prototype_connect.model;
  */
 
 public class User {
-    protected final String id;
+    protected String id;
     protected String name;
+    protected boolean selected;
+
+    public User(){
+
+    }
 
     public User(String name, String id){
-        this.id = id;
-        this.name = name;
+        this.id = id; //numero
+        this.name = name; //pseudo
+        this.selected = false;
     }
 
     public String getName(){
@@ -21,8 +27,30 @@ public class User {
         return id;
     }
 
+    public boolean isChecked(){return selected;}
+
+    public void switchCheckbox(){
+        this.selected = !this.selected;
+    }
     @Override
     public String toString(){
         return "id = " + id + ", " + "name= " + name +"\n";
+    }
+
+    //----------------------
+    public String getPseudo() {
+        return name;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.name = pseudo;
+    }
+
+    public String getNumero() {
+        return id;
+    }
+
+    public void setNumero(String numero) {
+        this.id = numero;
     }
 }
