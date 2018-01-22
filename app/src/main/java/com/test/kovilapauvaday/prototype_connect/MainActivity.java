@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //bouton login de facebook
        com.facebook.login.widget.LoginButton loginButton = findViewById(R.id.login_button);
-       loginButton.setReadPermissions("email", "public_profile"/*,"user_friends","read_custom_friendlists"*/);
+       loginButton.setReadPermissions("email", "public_profile","user_friends","read_custom_friendlists");
 
        setAuthListener();
 
@@ -254,7 +254,10 @@ public class MainActivity extends AppCompatActivity implements
                     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         if (user != null) {
-                            if(facebook_mode){
+                            //if(facebook_mode){
+                            if(Profile.getCurrentProfile() != null){
+                                facebook_mode = true;
+                                name = Profile.getCurrentProfile().getName();
                                 register_user(Profile.getCurrentProfile().getId().toString());
                                 intent.putExtra(HomeActivity.FBK_MODE, true);
                             }else{

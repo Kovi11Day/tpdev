@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.test.kovilapauvaday.prototype_connect.messages.ChatActivity;
 import com.test.kovilapauvaday.prototype_connect.messages.MessagesActivity;
 import com.test.kovilapauvaday.prototype_connect.model.GlobalDataSingleton;
@@ -192,6 +194,32 @@ public class HomeActivity extends AppCompatActivity
             ).executeAsync();
         }
 
+        //setAuthListener();
+
+    }
+
+    public void setAuthListener(){
+        FirebaseAuth.getInstance().addAuthStateListener(
+                new FirebaseAuth.AuthStateListener() {
+                    @Override
+                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        if (user != null) {
+                            if(facebook_mode){
+                            }else{
+                            }
+                        }else if (user == null){
+                            Log.v("facebook - onCancel", "###HomeActivity: user not signed in");
+                            FirebaseAuth.getInstance().signOut();
+                            if(facebook_mode)
+                                LoginManager.getInstance().logOut();
+                            Intent sortieIntent = new Intent(HomeActivity.this, MainActivity.class);
+                            startActivity(sortieIntent);
+                            finish();
+
+                        }
+                    }
+                });
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -215,11 +243,11 @@ public class HomeActivity extends AppCompatActivity
             intent.putExtra("id_envoyeur", iduser);
             startActivity(intent);
         } else if (id == R.id.sortie) {
-            FirebaseAuth.getInstance().signOut();
-
-            if(this.facebook_mode)
+            if(facebook_mode) {
                 LoginManager.getInstance().logOut();
-
+            }
+            Profile.getCurrentProfile().setCurrentProfile(null);
+            FirebaseAuth.getInstance().signOut();
             Intent sortieIntent = new Intent(this, MainActivity.class);
             startActivity(sortieIntent);
             finish();
