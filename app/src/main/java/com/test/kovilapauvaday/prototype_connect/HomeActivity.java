@@ -104,16 +104,6 @@ public class HomeActivity extends AppCompatActivity
         if(this.facebook_mode)
          this.id = getIntent().getStringExtra(KEY_ID);
 
-        // pour savoir si la localisation est alumée ou non
-        try{
-            localisationGPS = new LocalisationGPS(HomeActivity.this);
-            mLocation = localisationGPS.getLocation();
-            double lt = mLocation.getLatitude();
-            double lo = mLocation.getLongitude();
-        } catch (Exception e) {
-            Toast.makeText(HomeActivity.this, "Activez la localisation !!!", Toast.LENGTH_LONG).show();
-        }
-
         if (lat == null && lon == null) {
             latitude = 0;
             longtitude = 0;

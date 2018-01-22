@@ -1,6 +1,7 @@
 package com.test.kovilapauvaday.prototype_connect.users_amies_profile;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.Profile;
 import com.test.kovilapauvaday.prototype_connect.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -62,8 +64,10 @@ public class UsersActivity extends AppCompatActivity {
                 viewHolder.setNumero(model.getNumero());
                 final String userId = getRef(position).getKey();
 
-                model.setFirebaseId(userId);
-                GlobalDataSingleton.getInstance().addFireBaseUser(model);
+                if (Profile.getCurrentProfile() != null) {
+                    model.setFirebaseId(userId);
+                    GlobalDataSingleton.getInstance().addFireBaseUser(model);
+                }
 
                 Log.v("id:", userId);
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {

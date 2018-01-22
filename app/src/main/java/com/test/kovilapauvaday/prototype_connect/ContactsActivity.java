@@ -32,8 +32,13 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         GlobalDataSingleton.getInstance().unselectAll();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.contacts_appBar);
-        toolbar.setTitle("Amies Facebook");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Amies Facebook");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         setSupportActionBar(toolbar);
 
         ListView listViewContacts = (ListView)findViewById(R.id.listview_contacts);
@@ -45,14 +50,14 @@ public class ContactsActivity extends AppCompatActivity {
                         GlobalDataSingleton.getInstance().getFriends());
 
         listViewContacts.setAdapter(adapter);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         //adding some ficticious friends to test list
         for(int i = 0 ; i < 50; i++){

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView detailConnexion;
     private EditText editNumeroTel;
     private EditText editCodeTel;
+    //private EditText editPseudo;
     private Button buttonEntrer;
     private Button buttonVerifier;
     private Button buttonRenvoyer;
@@ -108,18 +109,18 @@ public class MainActivity extends AppCompatActivity implements
         permissionManager.checkAndRequestPermissions(this);
 
         facebook_mode = false;
-
-       /*if(FirebaseAuth.getInstance().getCurrentUser() != null ||Profile.getCurrentProfile() != null ){
+        //***
+       if(FirebaseAuth.getInstance().getCurrentUser() != null && Profile.getCurrentProfile() == null ){
            Log.v("facebook - profile", "###currentUser=" + FirebaseAuth.getInstance().getCurrentUser() );
            intent.putExtra(HomeActivity.FBK_MODE, false);
-
            intent.putExtra("id_envoyeur", "vide");
            intent.putExtra("latitude", "0");
            intent.putExtra("longtitude", "0");
            intent.putExtra("user_pseudo", "vide");
            startActivity(intent);
            finish();
-        }*/
+        }
+        setAuthListener();
 
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements
         buttonEntrer = (Button) findViewById(R.id.button_entrer);
         buttonVerifier = (Button) findViewById(R.id.button_verifier);
         buttonRenvoyer = (Button) findViewById(R.id.button_renvoyer);
+        //editPseudo= (EditText) findViewById(R.id.edit_pseudo);
 
         FacebookSdk.sdkInitialize(getApplicationContext());//fbk
         AppEventsLogger.activateApp(this); //fbk
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
        com.facebook.login.widget.LoginButton loginButton = findViewById(R.id.login_button);
        loginButton.setReadPermissions("email", "public_profile","user_friends","read_custom_friendlists");
 
-       setAuthListener();
+
 
         loginButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -259,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements
                                 facebook_mode = true;
                                 name = Profile.getCurrentProfile().getName();
                                 register_user(Profile.getCurrentProfile().getId().toString());
+
                                 intent.putExtra(HomeActivity.FBK_MODE, true);
                             }else{
                                 intent.putExtra(HomeActivity.FBK_MODE, false);
@@ -278,8 +281,11 @@ public class MainActivity extends AppCompatActivity implements
                                 handleFacebookAccessToken(fbLoginResult.getAccessToken());
 
                         }
+
                     }
                 });
+
+
     }
 
     /**
@@ -420,6 +426,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void updateUI(int uiState, FirebaseUser user, PhoneAuthCredential cred) {
+        //name = editPseudo.getText().toString();
+
         switch (uiState) {
             case STATE_INITIALIZED:
                 enableViews(buttonEntrer, editNumeroTel);
@@ -445,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (cred != null) {
                     if (cred.getSmsCode() != null) {
+                        //name = editPseudo.getText().toString();
                         editCodeTel.setText(cred.getSmsCode());
                     } else {
                         editCodeTel.setText("Invalide");
@@ -469,16 +478,16 @@ public class MainActivity extends AppCompatActivity implements
             partieAutentification.setVisibility(View.GONE);
             register_user(editNumeroTel.getText().toString());
 
-           /* Intent intent = new Intent(this, HomeActivity.class);
+            /*Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(HomeActivity.FBK_MODE, false);
             intent.putExtra("id_envoyeur", "vide");
             intent.putExtra("latitude", "0");
             intent.putExtra("longtitude", "0");
             intent.putExtra("user_pseudo", "vide");
-            intent.putExtra("type_class", "vide");*/
+            intent.putExtra("type_class", "vide");
 
-            //startActivity(intent);
-            //finish();
+            startActivity(intent);
+            finish();*/
 
         }
     }

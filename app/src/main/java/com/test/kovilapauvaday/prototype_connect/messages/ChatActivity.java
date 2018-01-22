@@ -108,15 +108,17 @@ public class ChatActivity extends AppCompatActivity {
             creatAlertDialog();
         }
 
-        localisationGPS = new LocalisationGPS(ChatActivity.this);
-        location = localisationGPS.getLocation();
-        latitudeEnvoyeur = location.getLatitude();
-        longtitudeEnvoyeur = location.getLongitude();
-
         buttonLocalisation = (ImageButton) findViewById(R.id.button_localisation);
         buttonLocalisation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {
+                    // pour etre sur que gps est active
+                    localisationGPS = new LocalisationGPS(ChatActivity.this);
+                    location = localisationGPS.getLocation();
+                    latitudeEnvoyeur = location.getLatitude();
+                    longtitudeEnvoyeur = location.getLongitude();
 
                 DatabaseReference newNotificationref = globaleDatabase.child("Notifications").child(userId).push();
                 newNotificationId = newNotificationref.getKey();
@@ -138,6 +140,9 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
                 Toast.makeText(ChatActivity.this, "Vous avez envoyer la demande.", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(ChatActivity.this, "Activer le localisation !!!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -320,36 +325,47 @@ public class ChatActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Oui",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
-                        DatabaseReference newNotificationrefDialog = globaleDatabase.child("Notifications").child(userId).push();
-                        newNotificationId = newNotificationrefDialog.getKey();
+                        try {
+                            // pour etre sur que gps est active
+                            localisationGPS = new LocalisationGPS(ChatActivity.this);
+                            location = localisationGPS.getLocation();
+                            latitudeEnvoyeur = location.getLatitude();
+                            longtitudeEnvoyeur = location.getLongitude();
 
-                        HashMap<String, String> notificationData = new HashMap<>();
-                        notificationData.put("id_envoyeur", monId);
-                        notificationData.put("type_class", "HomeActivity");
-                        notificationData.put("latitude", latitudeEnvoyeur +"");
-                        notificationData.put("longtitude", longtitudeEnvoyeur +"");
-                        notificationData.put("notification_msg", "Accepte votre demande de localisation");
+                            DatabaseReference newNotificationrefDialog = globaleDatabase.child("Notifications").child(userId).push();
+                            newNotificationId = newNotificationrefDialog.getKey();
 
-                        Map requestMapNotifications = new HashMap();
-                        requestMapNotifications.put("Notifications/" + userId + "/" + newNotificationId, notificationData);
+                            HashMap<String, String> notificationData = new HashMap<>();
+                            notificationData.put("id_envoyeur", monId);
+                            notificationData.put("type_class", "HomeActivity");
+                            notificationData.put("latitude", latitudeEnvoyeur + "");
+                            notificationData.put("longtitude", longtitudeEnvoyeur + "");
+                            notificationData.put("notification_msg", "Accepte votre demande de localisation");
 
-                        globaleDatabase.updateChildren(requestMapNotifications, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            Map requestMapNotifications = new HashMap();
+                            requestMapNotifications.put("Notifications/" + userId + "/" + newNotificationId, notificationData);
 
-                            }
-                        });
+                            globaleDatabase.updateChildren(requestMapNotifications, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
-                        Intent intentHome = new Intent(ChatActivity.this, HomeActivity.class);
-                        intentHome.putExtra("latitude", latitudeRecepteur);
-                        intentHome.putExtra("longtitude", longtitudeRecepteur);
-                        intentHome.putExtra("user_pseudo", userPseudo);
-                        intentHome.putExtra("id_envoyeur", "vide");
-                        intentHome.putExtra("type_class", "vide");
-                        startActivity(intentHome);
+                                }
+                            });
 
-                        DonnesAmie.latitude = latitudeRecepteur;
-                        DonnesAmie.longtitude = longtitudeRecepteur;
+                            Intent intentHome = new Intent(ChatActivity.this, HomeActivity.class);
+                            intentHome.putExtra("latitude", latitudeRecepteur);
+                            intentHome.putExtra("longtitude", longtitudeRecepteur);
+                            intentHome.putExtra("user_pseudo", userPseudo);
+                            intentHome.putExtra("id_envoyeur", "vide");
+                            intentHome.putExtra("type_class", "vide");
+                            startActivity(intentHome);
+
+                            DonnesAmie.latitude = latitudeRecepteur;
+                            DonnesAmie.longtitude = longtitudeRecepteur;
+
+                        }  catch (Exception e) {
+                            Toast.makeText(ChatActivity.this, "Activer le localisation !!!", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                 })

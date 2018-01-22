@@ -43,36 +43,39 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         String type_class = remoteMessage.getData().get("type_class");
         String user_pseudo = remoteMessage.getData().get("user_pseudo");
 
-        if(type_class.equals("ProfileActivity")) {
+        if (type_class.equals("ProfileActivity")) {
             resultIntent = new Intent(this, ProfileActivity.class);
 
             resultIntent.putExtra("id_envoyeur", id_envoyeur);
 
-        } else if(type_class.equals("ChatActivity")) {
-            resultIntent = new Intent(this, ChatActivity.class);
-
-            resultIntent.putExtra("id_envoyeur", id_envoyeur);
-            resultIntent.putExtra("user_pseudo", user_pseudo);
-            resultIntent.putExtra("latitude", latitude);
-            resultIntent.putExtra("longtitude", longtitude);
-
-            DonnesAmie.latitude = latitude;
-            DonnesAmie.longtitude = longtitude;
-            DonnesAmie.pseudo = user_pseudo;
-
         } else {
-            resultIntent = new Intent(this, HomeActivity.class);
+            if (type_class.equals("ChatActivity")) {
+                resultIntent = new Intent(this, ChatActivity.class);
 
-            resultIntent.putExtra("id_envoyeur", id_envoyeur);
-            resultIntent.putExtra("user_pseudo", user_pseudo);
-            resultIntent.putExtra("latitude", latitude);
-            resultIntent.putExtra("longtitude", longtitude);
-            resultIntent.putExtra("type_class", type_class);
+                resultIntent.putExtra("id_envoyeur", id_envoyeur);
+                resultIntent.putExtra("user_pseudo", user_pseudo);
+                resultIntent.putExtra("latitude", latitude);
+                resultIntent.putExtra("longtitude", longtitude);
 
-            DonnesAmie.latitude = latitude;
-            DonnesAmie.longtitude = longtitude;
-            DonnesAmie.pseudo = user_pseudo;
+                DonnesAmie.latitude = latitude;
+                DonnesAmie.longtitude = longtitude;
+                DonnesAmie.pseudo = user_pseudo;
+
+            } else {
+                resultIntent = new Intent(this, HomeActivity.class);
+
+                resultIntent.putExtra("id_envoyeur", id_envoyeur);
+                resultIntent.putExtra("user_pseudo", user_pseudo);
+                resultIntent.putExtra("latitude", latitude);
+                resultIntent.putExtra("longtitude", longtitude);
+                resultIntent.putExtra("type_class", type_class);
+
+                DonnesAmie.latitude = latitude;
+                DonnesAmie.longtitude = longtitude;
+                DonnesAmie.pseudo = user_pseudo;
+            }
         }
+
 
         Uri defaultSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 

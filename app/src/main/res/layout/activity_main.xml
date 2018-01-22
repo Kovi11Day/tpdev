@@ -70,11 +70,6 @@
             android:orientation="vertical"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:weightSum="2.0">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,29 +78,19 @@
                 android:weightSum="2.0">
 
                 <EditText
-                    android:id="@+id/edit_pseudo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Pseudo."
-                    android:layout_weight="1"
-                    />
-
-                <EditText
                     android:id="@+id/edit_numero_tel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Numero Tel."
-                    android:layout_weight="1"
+                    android:layout_weight="1.0"
                     android:inputType="phone"/>
-
-            </LinearLayout>
 
                 <EditText
                     android:id="@+id/edit_code_tel"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Code de Verification"
-                    android:layout_weight="1"
+                    android:layout_weight="1.0"
                     android:inputType="number"/>
 
             </LinearLayout>

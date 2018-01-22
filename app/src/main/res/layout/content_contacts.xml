@@ -24,7 +24,6 @@
         android:layout_gravity="right"
         android:text="Search"
         app:layout_constraintRight_toRightOf="parent"
-
         />
 
     <ListView
