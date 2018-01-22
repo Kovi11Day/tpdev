@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.test.kovilapauvaday.prototype_connect.R;
-import com.test.kovilapauvaday.prototype_connect.model.User;
+import com.test.kovilapauvaday.prototype_connect.users_amies_profile.User;
 
 import java.util.List;
 

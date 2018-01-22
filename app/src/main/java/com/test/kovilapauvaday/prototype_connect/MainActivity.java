@@ -540,6 +540,7 @@ public class MainActivity extends AppCompatActivity implements
         //FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         monDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(id);
+
         String deviceToken = FirebaseInstanceId.getInstance().getToken();
 
         HashMap<String, String> userMap = new HashMap<>();

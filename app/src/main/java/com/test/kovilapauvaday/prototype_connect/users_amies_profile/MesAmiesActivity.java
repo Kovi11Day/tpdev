@@ -15,6 +15,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.test.kovilapauvaday.prototype_connect.model.GlobalDataSingleton;
 
 public class MesAmiesActivity extends AppCompatActivity {
 
@@ -38,18 +39,14 @@ public class MesAmiesActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Mes Amies");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         String monId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         amiesDatabase = FirebaseDatabase.getInstance().getReference().child("Amies").child(monId);
-
-
 
         linearLayoutManager = new LinearLayoutManager(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.amies_list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
     }
 
     @Override
@@ -69,9 +66,7 @@ public class MesAmiesActivity extends AppCompatActivity {
                 final String numero = model.getNumero();
                 viewHolder.setPseudo(pseudo);
                 viewHolder.setNumero(numero);
-
                 final String userId = getRef(position).getKey();
-
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

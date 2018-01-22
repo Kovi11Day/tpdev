@@ -40,11 +40,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.test.kovilapauvaday.prototype_connect.messages.ChatActivity;
 import com.test.kovilapauvaday.prototype_connect.messages.MessagesActivity;
 import com.test.kovilapauvaday.prototype_connect.model.GlobalDataSingleton;
 import com.test.kovilapauvaday.prototype_connect.users_amies_profile.MesAmiesActivity;
 import com.test.kovilapauvaday.prototype_connect.users_amies_profile.ProfileActivity;
+import com.test.kovilapauvaday.prototype_connect.users_amies_profile.User;
 import com.test.kovilapauvaday.prototype_connect.users_amies_profile.UsersActivity;
 
 import org.json.JSONArray;
@@ -181,6 +186,7 @@ public class HomeActivity extends AppCompatActivity
                             }
                             for (int i = 0; i < friends.length(); i++) {
                                 try {
+
                                     model.addFriend(friends.getJSONObject(i).getString("name"),
                                             friends.getJSONObject(i).getString("id"));
                                 } catch (JSONException e) {
@@ -194,11 +200,11 @@ public class HomeActivity extends AppCompatActivity
             ).executeAsync();
         }
 
-        //setAuthListener();
-
     }
 
-    public void setAuthListener(){
+
+
+    /*public void setAuthListener(){
         FirebaseAuth.getInstance().addAuthStateListener(
                 new FirebaseAuth.AuthStateListener() {
                     @Override
@@ -220,7 +226,7 @@ public class HomeActivity extends AppCompatActivity
                         }
                     }
                 });
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

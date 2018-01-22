@@ -1,19 +1,26 @@
 package com.test.kovilapauvaday.prototype_connect;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.Profile;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.ProviderQueryResult;
+import com.google.firebase.database.FirebaseDatabase;
 import com.test.kovilapauvaday.prototype_connect.contactslists.ContactAdapter;
 import com.test.kovilapauvaday.prototype_connect.model.GlobalDataSingleton;
-import com.test.kovilapauvaday.prototype_connect.model.User;
+import com.test.kovilapauvaday.prototype_connect.users_amies_profile.User;
 
 import javax.microedition.khronos.opengles.GL;
 
@@ -25,7 +32,8 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         GlobalDataSingleton.getInstance().unselectAll();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.contacts_appBar);
+        toolbar.setTitle("Amies Facebook");
         setSupportActionBar(toolbar);
 
         ListView listViewContacts = (ListView)findViewById(R.id.listview_contacts);
@@ -47,12 +55,14 @@ public class ContactsActivity extends AppCompatActivity {
         });
 
         //adding some ficticious friends to test list
-        //TODO: delete after
         for(int i = 0 ; i < 50; i++){
             GlobalDataSingleton.getInstance().getFriends().add(
                     new User("TestUser" + i, "fakeid" + i));
             adapter.notifyDataSetChanged();
         }
-    }
+
+        }
+
+
 
 }
