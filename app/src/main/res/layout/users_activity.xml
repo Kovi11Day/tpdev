@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bleu_fonce"
-    tools:context="com.test.kovilapauvaday.prototype_connect.UsersActivity">
+    tools:context="com.test.kovilapauvaday.prototype_connect.users_amies_profile.UsersActivity">
 
 
     <include layout="@layout/haut_des_activitys"

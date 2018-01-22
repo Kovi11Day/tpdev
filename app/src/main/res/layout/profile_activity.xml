@@ -5,16 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bleu_claire"
-    tools:context="com.test.kovilapauvaday.prototype_connect.ProfileActivity">
+    tools:context="com.test.kovilapauvaday.prototype_connect.users_amies_profile.ProfileActivity">
+
+    <include
+        android:id="@+id/profile_app_bar"
+        layout="@layout/haut_des_activitys" />
 
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:layout_alignParentTop="true"
+        android:layout_height="240dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/profile_app_bar"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
         android:background="@color/bleu"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/image_contacte" />
 
     <TextView
@@ -27,6 +33,18 @@
         android:text="Pseudo"
         android:textColor="@android:color/black"
         android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/profile_pseudo_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="Pseudo"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/profile_numero"

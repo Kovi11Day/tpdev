@@ -38,7 +38,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.test.kovilapauvaday.prototype_connect.messages.ChatActivity;
+import com.test.kovilapauvaday.prototype_connect.messages.MessagesActivity;
 import com.test.kovilapauvaday.prototype_connect.model.GlobalDataSingleton;
+import com.test.kovilapauvaday.prototype_connect.users_amies_profile.MesAmiesActivity;
+import com.test.kovilapauvaday.prototype_connect.users_amies_profile.ProfileActivity;
+import com.test.kovilapauvaday.prototype_connect.users_amies_profile.UsersActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,26 +55,22 @@ public class HomeActivity extends AppCompatActivity
     //google-maps et firebase
     private GoogleMap mMap;
     private LocalisationGPS localisationGPS;
-    private FloatingActionButton fab;
     private Location mLocation;
-
     private double latitude = 0;
     private double longtitude = 0;
-    private String user_pseudo = "vide";
 
-    private String from_user_id = "vide";
+    //données reservés pour la notification
+    private String user_pseudo = "vide";
+    private String id_envoyeur = "vide";
     private String type_class = "vide";
-    private Intent resultIntent = null;
     private String lat = "0";
     private String lon = "0";
 
-    private static int MY_LOCATION_REQUEST_CODE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
+    private Intent resultIntent = null;
 
-    //facebook
+    //données utiliser pour fonctionnalités facebook
     Intent intent_contacts;
     String id;
-    TextView txtTestProfile;
     GlobalDataSingleton model = GlobalDataSingleton.getInstance();
     public static final String KEY_ID = "KEY_ID";
     public static final String  FBK_MODE= "FBK_MODE";
@@ -83,53 +84,59 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //reçoit les données de notification en mode background
+        lat = getIntent().getStringExtra("latitude");
+        lon = getIntent().getStringExtra("longtitude");
+        user_pseudo = getIntent().getStringExtra("user_pseudo");
+        id_envoyeur = getIntent().getStringExtra("id_envoyeur");
+        type_class = getIntent().getStringExtra("type_class");
+
         //get facebook information from intent
         this.intent_contacts = new Intent(this, ContactsActivity.class);
         this.facebook_mode = getIntent().getBooleanExtra(FBK_MODE, false);
         if(this.facebook_mode)
          this.id = getIntent().getStringExtra(KEY_ID);
 
-
-        lat = getIntent().getStringExtra("latitude");
-        lon = getIntent().getStringExtra("longtitude");
-        user_pseudo = getIntent().getStringExtra("user_pseudo");
-
-        from_user_id = getIntent().getStringExtra("from_user_id");
-        type_class = getIntent().getStringExtra("type_class");
-
-        Log.i("HomeActivity", "latitude : " + lat);
-        Log.i("HomeActivity", "longtitude : " + lon);
-        Log.i("HomeActivity", "user_pseudo : " + user_pseudo);
-        Log.i("HomeActivity", "from_user_id : " + from_user_id);
-        Log.i("HomeActivity", "type_class : " + type_class);
+        // pour savoir si la localisation est alumée ou non
+        try{
+            localisationGPS = new LocalisationGPS(HomeActivity.this);
+            mLocation = localisationGPS.getLocation();
+            double lt = mLocation.getLatitude();
+            double lo = mLocation.getLongitude();
+        } catch (Exception e) {
+            Toast.makeText(HomeActivity.this, "Activez la localisation !!!", Toast.LENGTH_LONG).show();
+        }
 
         if (lat == null && lon == null) {
             latitude = 0;
             longtitude = 0;
+            latitude = (new Double(DonnesAmie.latitude)).doubleValue();
+            longtitude = (new Double(DonnesAmie.longtitude)).doubleValue();
         } else if ((!lat.equals("0")) && (!lon.equals("0"))) {
             latitude = (new Double(lat)).doubleValue();
             longtitude = (new Double(lon)).doubleValue();
+            DonnesAmie.latitude = lat;
+            DonnesAmie.longtitude = lon;
+            DonnesAmie.pseudo = user_pseudo;
         }
 
-        if(user_pseudo == null && from_user_id == null && type_class == null) {
-            user_pseudo = "vide";
-            from_user_id = "vide";
-            type_class = "vide";
+        if(user_pseudo == null && id_envoyeur == null && type_class == null) {
+           user_pseudo = DonnesAmie.pseudo;
+           id_envoyeur = "vide";
+           type_class = "vide";
         }
 
-        if((! user_pseudo.equals("vide")) && (! from_user_id.equals("vide")) && (! type_class.equals("vide"))) {
-
-
+        if((! user_pseudo.equals("vide")) && (! id_envoyeur.equals("vide")) && (! type_class.equals("vide"))) {
+            //va à l'activité qui a été envoyé par la notification
             if (type_class.equals("ProfileActivity")) {
                 resultIntent = new Intent(this, ProfileActivity.class);
 
-                resultIntent.putExtra("from_user_id", from_user_id);
+                resultIntent.putExtra("id_envoyeur", id_envoyeur);
 
                 startActivity(resultIntent);
             } else if (type_class.equals("ChatActivity")) {
                 resultIntent = new Intent(this, ChatActivity.class);
-
-                resultIntent.putExtra("from_user_id", from_user_id);
+                resultIntent.putExtra("id_envoyeur", id_envoyeur);
                 resultIntent.putExtra("user_pseudo", user_pseudo);
                 resultIntent.putExtra("latitude", lat);
                 resultIntent.putExtra("longtitude", lon);
@@ -147,17 +154,11 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //google-maps
-        //latitude = getIntent().getDoubleExtra("ami_latitude", 0.0);
-        //longtitude = getIntent().getDoubleExtra("ami_longtitude", 0.0);
-        //pseudo = getIntent().getStringExtra("ami_pseudo");
-        //Toast.makeText(HomeActivity.this, pseudo + "\n" + latitude + "\n" + longtitude, Toast.LENGTH_LONG).show();
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //recuperer amies facebook
+        //recuperer les amies de facebook
         if( facebook_mode) {
             AccessToken.getCurrentAccessToken();
             String graphPath = "/me/friends";
@@ -202,24 +203,26 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.contacts) {
             Intent intent = new Intent(this, UsersActivity.class);
             startActivity(intent);
-        } /*else if (id == R.id.carte) {
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
-        }*/ else if (id == R.id.mes_amies) {
+        }  else if (id == R.id.mes_amies) {
             Intent intent = new Intent(this, MesAmiesActivity.class);
             startActivity(intent);
         } else if (id == R.id.messages) {
-
+            Intent intent = new Intent(this, MessagesActivity.class);
+            startActivity(intent);
         }else if (id == R.id.parameters) {
-            Intent intent = new Intent(this, ParametersActivity.class);
+            String iduser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.putExtra("id_envoyeur", iduser);
             startActivity(intent);
         } else if (id == R.id.sortie) {
             FirebaseAuth.getInstance().signOut();
-            LoginManager.getInstance().logOut();
-            //String iduser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            Intent intent = new Intent(this, MainActivity.class);
-            //intent.putExtra("user_id", iduser);
-            startActivity(intent);
+
+            if(this.facebook_mode)
+                LoginManager.getInstance().logOut();
+
+            Intent sortieIntent = new Intent(this, MainActivity.class);
+            startActivity(sortieIntent);
+            finish();
         }else if (id == R.id.nav_contacts) {
             startActivity(this.intent_contacts);
         }
@@ -240,31 +243,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -272,44 +250,19 @@ public class HomeActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
-                // Add a marker in Sydney and move the camera
+                // montrer l'amie
                 if(latitude != 0 && longtitude != 0) {
                     LatLng sydney = new LatLng(latitude, longtitude);
                     mMap.addMarker(new MarkerOptions().position(sydney).title(user_pseudo));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
                 }
             } else {
-                // Show rationale and request permission.
+                // Quand il n'y a pas de permission
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_CONTACTS},
-                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-                Toast.makeText(HomeActivity.this, "Aller dans parrametres et donnez autorisation pour localisation !!!", Toast.LENGTH_LONG).show();
-
-            }
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_LOCATION_REQUEST_CODE) {
-            if (permissions.length == 1 &&
-                    permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                mMap.setMyLocationEnabled(true);
-            } else {
-                // Permission was denied. Display an error message.
-                Toast.makeText(HomeActivity.this, "Pas de autorisation", Toast.LENGTH_LONG).show();
+                        1);
+                Toast.makeText(HomeActivity.this,
+                        "Allez dans les paramètres et donnez l'autorisation pour la localisation !!!", Toast.LENGTH_LONG).show();
 
             }
         }

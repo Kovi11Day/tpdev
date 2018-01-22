@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.test.kovilapauvaday.prototype_connect.ChatActivity">
+    tools:context="com.test.kovilapauvaday.prototype_connect.messages.ChatActivity">
 
     <include
         android:id="@+id/chat_app_bar"
         layout="@layout/haut_des_activitys" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/message_swipe_layout"
+        android:id="@+id/rafraichir_messages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout"
+        android:layout_above="@+id/linear_layout"
         android:layout_below="@+id/chat_app_bar"
         android:background="@color/bleu_claire">
 
@@ -22,13 +22,15 @@
             android:id="@+id/messages_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/linearLayout"
-            android:layout_below="@+id/chat_app_bar"></android.support.v7.widget.RecyclerView>
+            android:layout_above="@+id/linear_layout"
+            android:layout_below="@+id/chat_app_bar">
+
+        </android.support.v7.widget.RecyclerView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -46,7 +48,7 @@
             app:srcCompat="@drawable/image_localisation" />
 
         <EditText
-            android:id="@+id/chat_message_view"
+            android:id="@+id/edit_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="8"
@@ -60,7 +62,7 @@
             android:paddingTop="14dp" />
 
         <ImageButton
-            android:id="@+id/chat_send_btn"
+            android:id="@+id/button_envoie_message"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"

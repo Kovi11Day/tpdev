@@ -53,11 +53,9 @@ public class MainActivity extends AppCompatActivity implements
         View.OnClickListener {
 
     //maps and firebase auth
-    private String name = "pseudo"; //nom dutilisateur par defaut
-    private static final String TAG = "PhoneAuthActivity";
+    private String name = "pseudo"; //nom de l'utilisateur par defaut
 
     private static final String KEY_VERIFY_IN_PROGRESS = "key_verify_in_progress";
-
     private static final int STATE_INITIALIZED = 1;
     private static final int STATE_CODE_SENT = 2;
     private static final int STATE_VERIFY_FAILED = 3;
@@ -65,134 +63,125 @@ public class MainActivity extends AppCompatActivity implements
     private static final int STATE_SIGNIN_FAILED = 5;
     private static final int STATE_SIGNIN_SUCCESS = 6;
 
-    //private FirebaseAuth mAuth;
+    Intent intent;
 
-    private boolean mVerificationInProgress = false;
-    private String mVerificationId;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-
-    private ViewGroup mPhoneNumberViews;
-    private ViewGroup mSignedInViews;
-
-    private TextView mStatusText;
-    private TextView mDetailText;
-
-    private EditText mPhoneNumberField;
-    private EditText mVerificationField;
-
-    private Button mStartButton;
-    private Button mVerifyButton;
-    private Button mResendButton;
-    private Button mSignOutButton;
+    //views
+    private ViewGroup partieAutentification;
+    private TextView infoConnexion;
+    private TextView detailConnexion;
+    private EditText editNumeroTel;
+    private EditText editCodeTel;
+    private Button buttonEntrer;
+    private Button buttonVerifier;
+    private Button buttonRenvoyer;
 
     // firebase
-    ProgressBar progressBar;
-    /////////////////////////////////////////////////////////////////////////////////////
-    private DatabaseReference mDatabase;
-    private DatabaseReference mUserDatabase;
-    // permission
+    private DatabaseReference monDatabase;
+    private FirebaseAuth firebaseAuth; //mAuth
+
+    // verification de numero
+    private boolean progresse = false;
+    private String monVerificationId;
+    private PhoneAuthProvider.ForceResendingToken forceResendingToken;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
+    //permission pour la localisation
     PermissionManager permissionManager;
-    //facebook
+
+    //authentification avec facebook
+    private static final String TAG = "FacebookLogin";
     private CallbackManager callbackManager;
-    Intent intent;
     private LoginResult fbLoginResult;
     private boolean facebook_mode;
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //this.mAuth = FirebaseAuth.getInstance();
+        //this.firebaseAuth = FirebaseAuth.getInstance();
         this.intent = new Intent(this, HomeActivity.class);
 
         // permission
         permissionManager = new PermissionManager() { };
         permissionManager.checkAndRequestPermissions(this);
-        facebook_mode = false;
 
-        Log.v("facebook - profile", "###checkpoint 1" );
+        facebook_mode = false;
 
        /*if(FirebaseAuth.getInstance().getCurrentUser() != null ||Profile.getCurrentProfile() != null ){
            Log.v("facebook - profile", "###currentUser=" + FirebaseAuth.getInstance().getCurrentUser() );
            intent.putExtra(HomeActivity.FBK_MODE, false);
-           intent.putExtra("from_user_id", "vide");
+
+           intent.putExtra("id_envoyeur", "vide");
            intent.putExtra("latitude", "0");
            intent.putExtra("longtitude", "0");
            intent.putExtra("user_pseudo", "vide");
-           intent.putExtra("type_class", "vide");
-            startActivity(intent);
-            finish();
+           startActivity(intent);
+           finish();
         }*/
 
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
 
-        mPhoneNumberViews = (ViewGroup) findViewById(R.id.phone_auth_fields);
-        mSignedInViews = (ViewGroup) findViewById(R.id.signed_in_buttons);
-
-        mStatusText = (TextView) findViewById(R.id.status);
-        mDetailText = (TextView) findViewById(R.id.detail);
-
-        mPhoneNumberField = (EditText) findViewById(R.id.field_phone_number);
-        mVerificationField = (EditText) findViewById(R.id.field_verification_code);
-
-        mStartButton = (Button) findViewById(R.id.button_start_verification);
-        mVerifyButton = (Button) findViewById(R.id.button_verify_phone);
-        mResendButton = (Button) findViewById(R.id.button_resend);
-        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
-
-        // Assign click listeners
-        mStartButton.setOnClickListener(this);
-        mVerifyButton.setOnClickListener(this);
-        mResendButton.setOnClickListener(this);
-        mSignOutButton.setOnClickListener(this);
+        // initialisations des vues
+        partieAutentification = (ViewGroup) findViewById(R.id.partie_autentification);
+        infoConnexion = (TextView) findViewById(R.id.info_connexion);
+        detailConnexion = (TextView) findViewById(R.id.detail_connexion);
+        editNumeroTel = (EditText) findViewById(R.id.edit_numero_tel);
+        editCodeTel = (EditText) findViewById(R.id.edit_code_tel);
+        buttonEntrer = (Button) findViewById(R.id.button_entrer);
+        buttonVerifier = (Button) findViewById(R.id.button_verifier);
+        buttonRenvoyer = (Button) findViewById(R.id.button_renvoyer);
 
         FacebookSdk.sdkInitialize(getApplicationContext());//fbk
         AppEventsLogger.activateApp(this); //fbk
 
-        Log.v("facebook - profile", "###checkpoint 2" );
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        buttonEntrer.setOnClickListener(this);
+        buttonVerifier.setOnClickListener(this);
+        buttonRenvoyer.setOnClickListener(this);
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+            // la vérification s'est bien passée
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
-                mVerificationInProgress = false;
+                progresse = false;
                 updateUI(STATE_VERIFY_SUCCESS, credential);
                 signInWithPhoneAuthCredential(credential);
             }
 
+            // la vérification a echoué
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                mVerificationInProgress = false;
+                progresse = false;
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    mPhoneNumberField.setError("Invalid phone number.");
+                    editNumeroTel.setError("Le numéro est invalide.");
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     Toast.makeText(MainActivity.this, "NON quota", Toast.LENGTH_SHORT).show();
                 }
                 updateUI(STATE_VERIFY_FAILED);
             }
 
+            //l'envoie de code
             @Override
             public void onCodeSent(String verificationId,
                                    PhoneAuthProvider.ForceResendingToken token) {
-                mVerificationId = verificationId;
-                mResendToken = token;
+                monVerificationId = verificationId;
+                forceResendingToken = token;
 
                 updateUI(STATE_CODE_SENT);
             }
 
         };
-        Log.v("facebook - profile", "###checkpoint 3" );
 
-        //facebook-start
+        //bouton login de facebook
        com.facebook.login.widget.LoginButton loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email", "public_profile"/*,"user_friends","read_custom_friendlists"*/);
-        //loginButton.setReadPermissions("user_friends");
-        //loginButton.setReadPermissions("read_custom_friendlists");
+       loginButton.setReadPermissions("email", "public_profile"/*,"user_friends","read_custom_friendlists"*/);
 
-        setAuthListener();
+       setAuthListener();
+
         loginButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -200,10 +189,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
         );
-        Log.v("facebook - profile", "###checkpoint 4" );
 
-        // Create a callbackManager//s
-        // Initialize your instance of callbackManager//
         callbackManager = CallbackManager.Factory.create();
 
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -227,19 +213,6 @@ public class MainActivity extends AppCompatActivity implements
 
                                     finish();
                                     mProfileTracker.stopTracking();
-
-                                    /*String mcurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    register_user(currentProfile.getId().toString());
-
-                                    intent.putExtra(HomeActivity.KEY_ID, currentProfile.getId());
-                                    intent.putExtra(HomeActivity.FBK_MODE, true);
-                                    intent.putExtra("from_user_id", "vide");
-                                    intent.putExtra("latitude", "0");
-                                    intent.putExtra("longtitude", "0");
-                                    intent.putExtra("user_pseudo", "vide");
-                                    intent.putExtra("type_class", "vide");
-                                    startActivity(intent);
-                                    mProfileTracker.stopTracking();*/
                                 }
                             };
 
@@ -254,12 +227,6 @@ public class MainActivity extends AppCompatActivity implements
 
                             finish();
                             mProfileTracker.stopTracking();
-                            /*Profile profile = Profile.getCurrentProfile();
-                            intent.putExtra(HomeActivity.FBK_MODE, true);
-                            intent.putExtra(HomeActivity.KEY_ID, profile.getId());
-                            startActivity(intent);
-
-                            Log.v("facebook - profile", profile.getFirstName() );*/
                         }
                     }
 
@@ -274,9 +241,12 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-            //facebook-end
-
     }
+    /**
+     * Methode utilisée pour authentification facebook
+     * A chaque fois que l'utilisateur passe en mode authentifier avec firebase,
+     * L'activité HomeActivity est démarrer
+     */
     public void setAuthListener(){
         FirebaseAuth.getInstance().addAuthStateListener(
                 new FirebaseAuth.AuthStateListener() {
@@ -304,13 +274,18 @@ public class MainActivity extends AppCompatActivity implements
                             if(Profile.getCurrentProfile() != null && fbLoginResult!= null)
                                 handleFacebookAccessToken(fbLoginResult.getAccessToken());
 
-                            //initialise MainActivity
                         }
                     }
                 });
     }
+
+    /**
+     * Methode utilisé pour authentification facebook
+     * Transforme les token d'authentification de facebook en
+     * token d'authentification avec firebase
+     * @param token
+     */
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -319,41 +294,29 @@ public class MainActivity extends AppCompatActivity implements
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            //FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(MainActivity.this, "Authentication avec facebook échoué",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-
-                        // [START_EXCLUDE]
-                        // hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }
 
-
-    //facebook-authentification
+    //Methode utilisé pour l'authentification avec facebook
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-
-    ///////////////////////firebase-and-google-maps////////////////////////////
-
-    // permision
+    // permission pour la localisation
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         permissionManager.checkResult(requestCode, permissions, grantResults);
-
         ArrayList<String> granted = permissionManager.getStatus().get(0).granted;
         ArrayList<String> denied = permissionManager.getStatus().get(0).denied;
-
     }
 
     @Override
@@ -363,22 +326,22 @@ public class MainActivity extends AppCompatActivity implements
         updateUI(currentUser);
         Log.v("facebook - profile", "###checkpoint 7 - onStart" );
 
-        if (mVerificationInProgress && validatePhoneNumber()) {
+        if (progresse && validatePhoneNumber()) {
             facebook_mode = false;
-            startPhoneNumberVerification(mPhoneNumberField.getText().toString());
+            startPhoneNumberVerification(editNumeroTel.getText().toString());
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_VERIFY_IN_PROGRESS, mVerificationInProgress);
+        outState.putBoolean(KEY_VERIFY_IN_PROGRESS, progresse);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mVerificationInProgress = savedInstanceState.getBoolean(KEY_VERIFY_IN_PROGRESS);
+        progresse = savedInstanceState.getBoolean(KEY_VERIFY_IN_PROGRESS);
     }
 
 
@@ -389,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements
                 TimeUnit.SECONDS,
                 this,
                 mCallbacks);
-        mVerificationInProgress = true;
-        mStatusText.setVisibility(View.INVISIBLE);
+        progresse = true;
+        infoConnexion.setVisibility(View.INVISIBLE);
     }
 
     private void verifyPhoneNumberWithCode(String verificationId, String code) {
@@ -419,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements
                             updateUI(STATE_SIGNIN_SUCCESS, user);
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                mVerificationField.setError("Invalid code.");
+                                editCodeTel.setError("Code est invalide");
                             }
                             updateUI(STATE_SIGNIN_FAILED);
                         }
@@ -456,60 +419,56 @@ public class MainActivity extends AppCompatActivity implements
     private void updateUI(int uiState, FirebaseUser user, PhoneAuthCredential cred) {
         switch (uiState) {
             case STATE_INITIALIZED:
-                enableViews(mStartButton, mPhoneNumberField);
-                disableViews(mVerifyButton, mResendButton, mVerificationField);
-                mDetailText.setText(null);
+                enableViews(buttonEntrer, editNumeroTel);
+                disableViews(buttonVerifier, buttonRenvoyer, editCodeTel);
+                detailConnexion.setText(null);
                 break;
             case STATE_CODE_SENT:
-                enableViews(mVerifyButton, mResendButton, mPhoneNumberField, mVerificationField);
-                disableViews(mStartButton);
-                mDetailText.setText("Code est envoye");
-                mDetailText.setTextColor(Color.parseColor("#43a047"));
+                enableViews(buttonVerifier, buttonRenvoyer, editNumeroTel, editCodeTel);
+                disableViews(buttonEntrer);
+                detailConnexion.setText("Code est envoyé");
+                detailConnexion.setTextColor(Color.parseColor("#43a047"));
                 break;
             case STATE_VERIFY_FAILED:
-                enableViews(mStartButton, mVerifyButton, mResendButton, mPhoneNumberField,
-                        mVerificationField);
-                mDetailText.setText("Verification echoue");
-                mDetailText.setTextColor(Color.parseColor("#dd2c00"));
-                progressBar.setVisibility(View.INVISIBLE);
+                enableViews(buttonEntrer, buttonVerifier, buttonRenvoyer, editNumeroTel,
+                 editCodeTel);
+                detailConnexion.setText("Vérification échouée");
+                detailConnexion.setTextColor(Color.parseColor("#dd2c00"));
                 break;
             case STATE_VERIFY_SUCCESS:
-                disableViews(mStartButton, mVerifyButton, mResendButton, mPhoneNumberField,
-                        mVerificationField);
-                mDetailText.setText("Verfie");
-                mDetailText.setTextColor(Color.parseColor("#43a047"));
+                disableViews(buttonEntrer, buttonVerifier, buttonRenvoyer, editNumeroTel, editCodeTel);
+                detailConnexion.setText("Vérfié");
+                detailConnexion.setTextColor(Color.parseColor("#43a047"));
 
                 if (cred != null) {
                     if (cred.getSmsCode() != null) {
-                        mVerificationField.setText(cred.getSmsCode());
+                        editCodeTel.setText(cred.getSmsCode());
                     } else {
-                        mVerificationField.setText(R.string.instant_validation);
-                        mVerificationField.setTextColor(Color.parseColor("#4bacb8"));
+                        editCodeTel.setText("Invalide");
+                        editCodeTel.setTextColor(Color.parseColor("#4bacb8"));
                     }
                 }
 
                 break;
             case STATE_SIGNIN_FAILED:
-                mDetailText.setText("Echoue");
-                mDetailText.setTextColor(Color.parseColor("#dd2c00"));
+                detailConnexion.setText("Echoué");
+                detailConnexion.setTextColor(Color.parseColor("#dd2c00"));
                 break;
             case STATE_SIGNIN_SUCCESS:
-                mStatusText.setText("Connexion");
+                infoConnexion.setText("Connexion");
                 break;
         }
 
         if (user == null) {
-            mPhoneNumberViews.setVisibility(View.VISIBLE);
-            mSignedInViews.setVisibility(View.GONE);
-
-            mStatusText.setText("Deconnecte");;
+            partieAutentification.setVisibility(View.VISIBLE);
+            infoConnexion.setText("Deconnecté");
         } else {
-            mPhoneNumberViews.setVisibility(View.GONE);
-            register_user(mPhoneNumberField.getText().toString());
+            partieAutentification.setVisibility(View.GONE);
+            register_user(editNumeroTel.getText().toString());
 
            /* Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(HomeActivity.FBK_MODE, false);
-            intent.putExtra("from_user_id", "vide");
+            intent.putExtra("id_envoyeur", "vide");
             intent.putExtra("latitude", "0");
             intent.putExtra("longtitude", "0");
             intent.putExtra("user_pseudo", "vide");
@@ -522,12 +481,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private boolean validatePhoneNumber() {
-        String phoneNumber = mPhoneNumberField.getText().toString();
+        String phoneNumber = editNumeroTel.getText().toString();
         if (TextUtils.isEmpty(phoneNumber)) {
-            mPhoneNumberField.setError("Numero est invalide");
+            editNumeroTel.setError("Numéro est invalide !!!");
             return false;
         }
-
         return true;
     }
 
@@ -543,11 +501,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.button_start_verification:
+            case R.id.button_entrer:
                 if (!validatePhoneNumber()) {
                     return;
                 }
@@ -557,46 +514,40 @@ public class MainActivity extends AppCompatActivity implements
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                startPhoneNumberVerification(mPhoneNumberField.getText().toString());
+                startPhoneNumberVerification(editNumeroTel.getText().toString());
 
                 break;
-            case R.id.button_verify_phone:
-                String code = mVerificationField.getText().toString();
+            case R.id.button_verifier:
+                String code = editCodeTel.getText().toString();
+
                 if (TextUtils.isEmpty(code)) {
-                    mVerificationField.setError("Cannot be empty.");
+                    editCodeTel.setError("Ne peut pas être vide");
                     return;
                 }
 
-                verifyPhoneNumberWithCode(mVerificationId, code);
+                verifyPhoneNumberWithCode(monVerificationId, code);
                 break;
-            case R.id.button_resend:
-                resendVerificationCode(mPhoneNumberField.getText().toString(), mResendToken);
-                break;
-            case R.id.sign_out_button:
-                signOut();
+            case R.id.button_renvoyer:
+                resendVerificationCode(editNumeroTel.getText().toString(), forceResendingToken);
                 break;
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////
     private void register_user(final String numero) {
-        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+        //FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(id);
-
+        monDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(id);
         String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
         HashMap<String, String> userMap = new HashMap<>();
         userMap.put("numero", numero);
-        userMap.put("pseudo", name);//BD.PSEUDO);
+        userMap.put("pseudo", name);
         userMap.put("device_token", deviceToken);
 
-        
-        mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        monDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
                 if (task.isSuccessful()) {
-                    Log.v("facebook - profile", "test3" );
 
                 }
 

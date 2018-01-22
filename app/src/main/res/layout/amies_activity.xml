@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.test.kovilapauvaday.prototype_connect.messages.MessagesActivity">
+
+
+    <include layout="@layout/haut_des_activitys"
+        android:id="@+id/messages_appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/amies_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/messages_appBar">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

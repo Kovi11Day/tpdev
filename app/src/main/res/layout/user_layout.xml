@@ -39,26 +39,5 @@
         android:text="Numero"
         android:layout_alignLeft="@+id/user_pseudo" />
 
-    <!--
-    <ImageButton
-        android:id="@+id/button_ajout_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/user_numero"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:src="@drawable/image_add" />
-
-    <ImageButton
-        android:id="@+id/button_location_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/button_ajout_user"
-        android:layout_marginLeft="15dp"
-        android:src="@drawable/image_localisation" />
-     -->
 
 </RelativeLayout>
